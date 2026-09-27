@@ -3,6 +3,8 @@ name: Build BRO TV QA
 on:
   push:
     branches: [ qa-apk-3.1.0 ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -25,7 +27,10 @@ jobs:
           python3 - <<'PY'
           import re
           s=open('/tmp/share.html','r',encoding='utf-8',errors='replace').read()
-          for x in sorted(set(re.findall(r'https?://[^\"\'<> ]+|href=[\"\']([^\"\']+)', s))):
+          vals=[]
+          vals += re.findall(r'https?://[^\"\'<> ]+', s)
+          vals += re.findall(r'href=[\"\']([^\"\']+)', s)
+          for x in sorted(set(vals)):
               print(x)
           print('=== ZIP/DOWNLOAD CONTEXT ===')
           for m in re.finditer(r'(?i)(zip|download|file_id|public_id|BROTV)', s):
